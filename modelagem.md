@@ -1,105 +1,103 @@
 ```mermaid
 classDiagram
-class Usuario {
-+UUID id
-+String nome
-+String email
-+String senhaHash
-+String fotoPerfil
-+DateTime dataCriacao
-+login()
-+atualizarPerfil()
-}
-
-    class IntegracaoExterna {
+    %% --- MAIN CLASSES ---
+    class User {
         +UUID id
-        +String provedor (ex: Google)
-        +String tokenAcesso
-        +String tokenAtualizacao
-        +DateTime dataExpiracao
-        +sincronizarDados()
+        +String name
+        +String email
+        +String passwordHash
+        +String profilePicture
+        +DateTime createdAt
     }
 
-    class Categoria {
+    class Category {
         +UUID id
-        +String nome
-        +String corHex
-        +String tipo (Tarefa, Finança)
+        +String name
+        +String hexColor
+        +String moduleType
     }
 
-    class Tarefa {
+    %% --- SCHEDULE MODULE ---
+    class AGENDA_ITEM {
+        <<abstract>>
         +UUID id
-        +String titulo
-        +String descricao
-        +DateTime dataVencimento
-        +String prioridade
-        +Boolean statusConclusao
-        +concluir()
+        +String title
+        +String description
     }
 
-    class EventoAgenda {
-        +UUID id
-        +String titulo
-        +DateTime dataInicio
-        +DateTime dataFim
+    class Task {
+        +DateTime dueDate
+        +String priority
+        +Boolean isCompleted
+    }
+
+    class Event {
+        +DateTime startDate
+        +DateTime endDate
         +String googleEventId
-        +Boolean notificacaoAtiva
     }
 
-    class TransacaoFinanceira {
+    %% --- FINANCE MODULE ---
+    class FINANCIAL_ITEM {
+        <<abstract>>
         +UUID id
-        +Decimal valor
-        +String tipo (Receita, Despesa)
-        +DateTime data
-        +String descricao
+        +Decimal amount
     }
 
-    class MetaFinanceira {
+    class Transaction {
+        +String transactionType
+        +DateTime date
+        +String description
+    }
+
+    class Goal {
+        +String title
+        +Decimal targetAmount
+        +DateTime targetDate
+    }
+
+    class Investment {
+        +String assetName
+        +Decimal estimatedReturn
+    }
+
+    %% --- ACTIVITIES & HABITS MODULE ---
+    class ACTIVITY {
+        <<abstract>>
         +UUID id
-        +String titulo
-        +Decimal valorObjetivo
-        +Decimal valorAtual
-        +DateTime dataLimite
-        +adicionarSaldo(valor)
+        +String name
+        +String description
     }
 
-    class Investimento {
+    class HabitModule {
+        +String notes
+        +Integer currentStreak
+    }
+
+    class DailyRecord {
         +UUID id
-        +String nomeAtivo
-        +Decimal aporteTotal
-        +Decimal rendimentoEstimado
-        +Decimal saldoAtual
-        +atualizarRendimento()
+        +Date date
+        +Boolean isCompleted
     }
 
-    class ModuloHabito {
-        +UUID id
-        +String nome (ex: Dieta, Treino)
-        +String descricao
-        +String anotacoesLivres
-        +String templateUtilizado
-    }
+    %% --- INHERITANCE ---
+    AGENDA_ITEM <|-- Task
+    AGENDA_ITEM <|-- Event
 
-    class RegistroHabito {
-        +UUID id
-        +Date dataRegistro
-        +Boolean concluido
-        +Integer streakAtual
-        +registrarFrequencia()
-    }
+    FINANCIAL_ITEM <|-- Transaction
+    FINANCIAL_ITEM <|-- Goal
+    FINANCIAL_ITEM <|-- Investment
 
-    Usuario "1" -- "0..*" IntegracaoExterna : possui
-    Usuario "1" -- "0..*" Tarefa : cria
-    Usuario "1" -- "0..*" EventoAgenda : gerencia
-    Usuario "1" -- "0..*" TransacaoFinanceira : registra
-    Usuario "1" -- "0..*" MetaFinanceira : define
-    Usuario "1" -- "0..*" Investimento : acompanha
-    Usuario "1" -- "0..*" ModuloHabito : personaliza
-    Usuario "1" -- "0..*" Categoria : cria
+    ACTIVITY <|-- HabitModule
 
-    Categoria "1" -- "0..*" Tarefa : classifica
-    Categoria "1" -- "0..*" TransacaoFinanceira : categoriza
+    %% --- RELATIONSHIPS ---
+    User "1" --> "*" AGENDA_ITEM : owns
+    User "1" --> "*" FINANCIAL_ITEM : owns
+    User "1" --> "*" ACTIVITY : owns
+    User "1" --> "*" Category : creates
 
-    ModuloHabito "1" -- "0..*" RegistroHabito : contem
+    Task "*" --> "0..1" Category : belongs to
+    Transaction "*" --> "0..1" Category : belongs to
 
+    HabitModule "1" *-- "*" DailyRecord : contains
 ```
