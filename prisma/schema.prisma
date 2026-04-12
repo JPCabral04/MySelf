@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  name               String
+  email              String   @unique
+  passwordHash       String
+  profilePicture     String
+  createdAt          DateTime @default(now())
+
+  // relações (você implementa depois)
+  // agendaItems        AgendaItem[]
+  // financialItems     FinancialItem[]
+  // activities         Activity[]
+  // categoriesCreated  Category[]
+}
+
+model Category {
+  id         String @id @default(cuid())
+  name       String
+  hexColor   String
+  moduleType String
+
+  // referência futura
+  // userId     String
+}
+
+model AgendaItem {
+  id          String @id @default(cuid())
+  title       String
+  description String
+
+  // referência futura
+  // userId      String
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  dueDate     DateTime
+  priority    String
+  isCompleted Boolean
+
+  // referência futura
+  // categoryId  String?
+  // userId      String
+}
+
+model Event {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  startDate     DateTime
+  endDate       DateTime
+  googleEventId String
+
+  // referência futura
+  // userId        String
+}
+
+model FinancialItem {
+  id     String @id @default(cuid())
+  amount Float
+
+  // referência futura
+  // userId String
+}
+
+model Transaction {
+  id              String   @id @default(cuid())
+  amount          Float
+  transactionType String
+  date            DateTime
+  description     String
+
+  // referência futura
+  // categoryId      String?
+  // userId          String
+}
+
+model Goal {
+  id           String   @id @default(cuid())
+  amount       Float
+  title        String
+  targetAmount Float
+  targetDate   DateTime
+
+  // referência futura
+  // userId       String
+}
+
+model Investment {
+  id              String  @id @default(cuid())
+  amount          Float
+  assetName       String
+  estimatedReturn Float
+
+  // referência futura
+  // userId          String
+}
+
+model Activity {
+  id          String @id @default(cuid())
+  name        String
+  description String
+
+  // referência futura
+  // userId      String
+}
+
+model HabitModule {
+  id            String @id @default(cuid())
+  name          String
+  description   String
+  notes         String
+  currentStreak Int
+
+  // referência futura
+  // userId        String
+}
+
+model DailyRecord {
+  id          String   @id @default(cuid())
+  date        DateTime
+  isCompleted Boolean
+
+  // referência futura
+  // habitId     String
+}
