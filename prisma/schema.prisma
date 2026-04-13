@@ -7,19 +7,22 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id                 String   @id @default(cuid())
-  name               String
-  email              String   @unique
-  passwordHash       String
-  profilePicture     String
-  createdAt          DateTime @default(now())
+// ==========================================
+// USUÁRIO & CATEGORIAS
+// ==========================================
 
-  // relações (você implementa depois)
-  // agendaItems        AgendaItem[]
-  // financialItems     FinancialItem[]
-  // activities         Activity[]
-  // categoriesCreated  Category[]
+model User {
+  id             String   @id @default(cuid())
+  name           String
+  email          String   @unique
+  passwordHash   String
+  profilePicture String
+  createdAt      DateTime @default(now())
+
+  agendaItems       AgendaItem[]
+  financialItems    FinancialItem[]
+  activities        Activity[]
+  categoriesCreated Category[]
 }
 
 model Category {
@@ -28,8 +31,20 @@ model Category {
   hexColor   String
   moduleType String
 
-  // referência futura
-  // userId     String
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  tasks        Task[]
+  transactions Transaction[]
+}
+
+// ==========================================
+// AGENDA MODULE
+// ==========================================
+
+enum AgendaType {
+  TASK
+  EVENT
 }
 
 model AgendaItem {
@@ -37,74 +52,93 @@ model AgendaItem {
   title       String
   description String
 
-  // referência futura
-  // userId      String
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        AgendaType
+  event       Event?     @relation("agendaEvent")
+  task        Task?      @relation("agendaTask")
 }
 
 model Task {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  dueDate     DateTime
-  priority    String
-  isCompleted Boolean
+  agendaItemId String     @id
+  agendaItem   AgendaItem @relation("agendaTask", fields: [agendaItemId], references: [id], onDelete: Cascade)
+  
+  dueDate      DateTime
+  priority     String
+  isCompleted  Boolean
 
-  // referência futura
-  // categoryId  String?
-  // userId      String
+  categoryId   String?
+  category     Category?  @relation(fields: [categoryId], references: [id])
 }
 
 model Event {
-  id            String   @id @default(cuid())
-  title         String
-  description   String
+  agendaItemId  String     @id
+  agendaItem    AgendaItem @relation("agendaEvent", fields: [agendaItemId], references: [id], onDelete: Cascade)
+  
   startDate     DateTime
   endDate       DateTime
   googleEventId String
+}
 
-  // referência futura
-  // userId        String
+// ==========================================
+// FINANCIAL MODULE
+// ==========================================
+
+enum FinancialType {
+  TRANSACTION
+  GOAL
+  INVESTMENT
 }
 
 model FinancialItem {
   id     String @id @default(cuid())
   amount Float
 
-  // referência futura
-  // userId String
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        FinancialType
+  transaction Transaction?  @relation("financialTransaction")
+  goal        Goal?         @relation("financialGoal")
+  investment  Investment?   @relation("financialInvestment")
 }
 
 model Transaction {
-  id              String   @id @default(cuid())
-  amount          Float
+  financialItemId String        @id
+  financialItem   FinancialItem @relation("financialTransaction", fields: [financialItemId], references: [id], onDelete: Cascade)
+  
   transactionType String
   date            DateTime
   description     String
 
-  // referência futura
-  // categoryId      String?
-  // userId          String
+  categoryId      String?
+  category        Category?     @relation(fields: [categoryId], references: [id])
 }
 
 model Goal {
-  id           String   @id @default(cuid())
-  amount       Float
-  title        String
-  targetAmount Float
-  targetDate   DateTime
-
-  // referência futura
-  // userId       String
+  financialItemId String        @id
+  financialItem   FinancialItem @relation("financialGoal", fields: [financialItemId], references: [id], onDelete: Cascade)
+  
+  title           String
+  targetAmount    Float
+  targetDate      DateTime
 }
 
 model Investment {
-  id              String  @id @default(cuid())
-  amount          Float
+  financialItemId String        @id
+  financialItem   FinancialItem @relation("financialInvestment", fields: [financialItemId], references: [id], onDelete: Cascade)
+  
   assetName       String
   estimatedReturn Float
+}
 
-  // referência futura
-  // userId          String
+// ==========================================
+// ACTIVITY MODULE
+// ==========================================
+
+enum ActivityType {
+  HABIT
 }
 
 model Activity {
@@ -112,19 +146,21 @@ model Activity {
   name        String
   description String
 
-  // referência futura
-  // userId      String
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        ActivityType
+  habitModule HabitModule? @relation("activityHabit")
 }
 
 model HabitModule {
-  id            String @id @default(cuid())
-  name          String
-  description   String
+  activityId    String   @id
+  activity      Activity @relation("activityHabit", fields: [activityId], references: [id], onDelete: Cascade)
+  
   notes         String
   currentStreak Int
 
-  // referência futura
-  // userId        String
+  dailyRecords  DailyRecord[]
 }
 
 model DailyRecord {
@@ -132,6 +168,6 @@ model DailyRecord {
   date        DateTime
   isCompleted Boolean
 
-  // referência futura
-  // habitId     String
+  habitId String
+  habit   HabitModule @relation(fields: [habitId], references: [activityId], onDelete: Cascade)
 }
