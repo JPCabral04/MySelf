@@ -58,7 +58,7 @@ export class UserController {
     return reply.status(200).send(user);
   };
 
-  patch = async (
+  put = async (
     request: FastifyRequest<{
       Params: { id: string },
       Body: Partial<User>
@@ -98,3 +98,5 @@ export class UserController {
     return reply.status(204).send();
   };
 }
+
+export const userController = new UserController();
