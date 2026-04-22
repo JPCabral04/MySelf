@@ -1,5 +1,7 @@
 // ESM
 import Fastify from 'fastify'
+import { userRoutes } from './routers/user.router'
+import { categoryRoutes } from './routers/category.router'
 
 const fastify = Fastify({
   logger: true
@@ -8,6 +10,9 @@ const fastify = Fastify({
 fastify.get('/', async (request, reply) => {
   return { hello: 'world' }
 })
+
+fastify.register(userRoutes, { prefix: '/users' })
+fastify.register(categoryRoutes, { prefix: '/categories' })
 
 /**
  * Run the server!
