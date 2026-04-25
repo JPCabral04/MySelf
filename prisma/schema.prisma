@@ -16,7 +16,7 @@ model User {
   name           String
   email          String   @unique
   passwordHash   String
-  profilePicture String
+  profilePicture String?
   createdAt      DateTime @default(now())
 
   agendaItems       AgendaItem[]
@@ -28,8 +28,8 @@ model User {
 model Category {
   id         String @id @default(cuid())
   name       String
-  hexColor   String
-  moduleType String
+  hexColor   String?
+  moduleType String?
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -50,7 +50,7 @@ enum AgendaType {
 model AgendaItem {
   id          String @id @default(cuid())
   title       String
-  description String
+  description String?
 
   userId      String
   user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -64,8 +64,8 @@ model Task {
   agendaItemId String     @id
   agendaItem   AgendaItem @relation("agendaTask", fields: [agendaItemId], references: [id], onDelete: Cascade)
   
-  dueDate      DateTime
-  priority     String
+  dueDate      DateTime?
+  priority     String?
   isCompleted  Boolean
 
   categoryId   String?
@@ -78,7 +78,7 @@ model Event {
   
   startDate     DateTime
   endDate       DateTime
-  googleEventId String
+  googleEventId String?
 }
 
 // ==========================================
@@ -110,7 +110,7 @@ model Transaction {
   
   transactionType String
   date            DateTime
-  description     String
+  description     String?
 
   categoryId      String?
   category        Category?     @relation(fields: [categoryId], references: [id])
@@ -122,7 +122,7 @@ model Goal {
   
   title           String
   targetAmount    Float
-  targetDate      DateTime
+  targetDate      DateTime?
 }
 
 model Investment {
@@ -130,7 +130,7 @@ model Investment {
   financialItem   FinancialItem @relation("financialInvestment", fields: [financialItemId], references: [id], onDelete: Cascade)
   
   assetName       String
-  estimatedReturn Float
+  estimatedReturn Float?
 }
 
 // ==========================================
@@ -144,7 +144,7 @@ enum ActivityType {
 model Activity {
   id          String @id @default(cuid())
   name        String
-  description String
+  description String?
 
   userId      String
   user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -157,7 +157,7 @@ model HabitModule {
   activityId    String   @id
   activity      Activity @relation("activityHabit", fields: [activityId], references: [id], onDelete: Cascade)
   
-  notes         String
+  notes         String?
   currentStreak Int
 
   dailyRecords  DailyRecord[]
@@ -166,7 +166,7 @@ model HabitModule {
 model DailyRecord {
   id          String   @id @default(cuid())
   date        DateTime
-  isCompleted Boolean
+  isCompleted Boolean?
 
   habitId String
   habit   HabitModule @relation(fields: [habitId], references: [activityId], onDelete: Cascade)
