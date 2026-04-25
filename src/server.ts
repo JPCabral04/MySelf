@@ -12,10 +12,34 @@ import { investmentRoutes } from './routers/investment.router'
 import { activityRoutes } from './routers/activity.router'
 import { habitModuleRoutes } from './routers/habitModule.router'
 import { dailyRecordRoutes } from './routers/dailyRecord.router'
+import cors from '@fastify/cors'
+import fastifySwagger from '@fastify/swagger'
+import fastifySwaggerUi from '@fastify/swagger-ui'
 
 const fastify = Fastify({
   logger: true
 })
+
+await fastify.register(cors, {
+  origin: "*",
+  methods: "*",
+});
+
+await fastify.register(fastifySwagger, {
+  openapi: {
+    info: {
+      title: 'MySelf API',
+      description: 'API REST',
+      version: '1.0.0',
+    },
+    servers: [{ url: 'http://localhost:3000' }],
+  }
+})
+
+await fastify.register(fastifySwaggerUi, {
+  routePrefix: '/docs',
+})
+
 
 fastify.get('/', async (request, reply) => {
   return { hello: 'world' }
