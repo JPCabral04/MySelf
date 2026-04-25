@@ -12,6 +12,8 @@ import {
 export async function financialItemRoutes(fastify: FastifyInstance) {
   fastify.post('/', {
     schema: {
+      tags: ["FinancialItems"],
+      summary: "Create financial item",
       body: createFinancialItemBodySchema,
       response: {
         201: financialItemSchema
@@ -21,6 +23,8 @@ export async function financialItemRoutes(fastify: FastifyInstance) {
 
   fastify.get('/', {
     schema: {
+      tags: ["FinancialItems"],
+      summary: "List financial items",
       response: {
         200: {
           type: "array",
@@ -32,6 +36,8 @@ export async function financialItemRoutes(fastify: FastifyInstance) {
 
   fastify.get('/user/:userId', {
     schema: {
+      tags: ["FinancialItems"],
+      summary: "List financial items by user",
       params: financialItemUserIdParamsSchema,
       response: {
         200: {
@@ -44,6 +50,8 @@ export async function financialItemRoutes(fastify: FastifyInstance) {
 
   fastify.get('/:id', {
     schema: {
+      tags: ["FinancialItems"],
+      summary: "Get financial item by id",
       params: financialItemIdParamsSchema,
       response: {
         200: financialItemSchema,
@@ -54,6 +62,8 @@ export async function financialItemRoutes(fastify: FastifyInstance) {
 
   fastify.put('/:id', {
     schema: {
+      tags: ["FinancialItems"],
+      summary: "Update financial item by id",
       params: financialItemIdParamsSchema,
       body: updateFinancialItemBodySchema,
       response: {
@@ -65,6 +75,8 @@ export async function financialItemRoutes(fastify: FastifyInstance) {
 
   fastify.delete('/:id', {
     schema: {
+      tags: ["FinancialItems"],
+      summary: "Delete financial item by id",
       params: financialItemIdParamsSchema,
       response: {
         404: financialItemNotFoundSchema

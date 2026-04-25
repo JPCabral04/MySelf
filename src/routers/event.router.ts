@@ -11,6 +11,8 @@ import {
 export async function eventRoutes(fastify: FastifyInstance) {
   fastify.post('/', {
     schema: {
+      tags: ["Events"],
+      summary: "Create event",
       body: createEventBodySchema,
       response: {
         201: eventSchema,
@@ -21,6 +23,8 @@ export async function eventRoutes(fastify: FastifyInstance) {
 
   fastify.get('/', {
     schema: {
+      tags: ["Events"],
+      summary: "List events",
       response: {
         200: {
           type: "array",
@@ -32,6 +36,8 @@ export async function eventRoutes(fastify: FastifyInstance) {
 
   fastify.get('/:agendaItemId', {
     schema: {
+      tags: ["Events"],
+      summary: "Get event by agenda item id",
       params: eventAgendaItemIdParamsSchema,
       response: {
         200: eventSchema,
@@ -42,6 +48,8 @@ export async function eventRoutes(fastify: FastifyInstance) {
 
   fastify.put('/:agendaItemId', {
     schema: {
+      tags: ["Events"],
+      summary: "Update event by agenda item id",
       params: eventAgendaItemIdParamsSchema,
       body: updateEventBodySchema,
       response: {
@@ -53,6 +61,8 @@ export async function eventRoutes(fastify: FastifyInstance) {
 
   fastify.delete('/:agendaItemId', {
     schema: {
+      tags: ["Events"],
+      summary: "Delete event by agenda item id",
       params: eventAgendaItemIdParamsSchema,
       response: {
         404: eventNotFoundSchema

@@ -11,6 +11,8 @@ import {
 export async function investmentRoutes(fastify: FastifyInstance) {
   fastify.post('/', {
     schema: {
+      tags: ["Investments"],
+      summary: "Create investment",
       body: createInvestmentBodySchema,
       response: {
         201: investmentSchema,
@@ -21,6 +23,8 @@ export async function investmentRoutes(fastify: FastifyInstance) {
 
   fastify.get('/', {
     schema: {
+      tags: ["Investments"],
+      summary: "List investments",
       response: {
         200: {
           type: "array",
@@ -32,6 +36,8 @@ export async function investmentRoutes(fastify: FastifyInstance) {
 
   fastify.get('/:financialItemId', {
     schema: {
+      tags: ["Investments"],
+      summary: "Get investment by financial item id",
       params: investmentFinancialItemIdParamsSchema,
       response: {
         200: investmentSchema,
@@ -42,6 +48,8 @@ export async function investmentRoutes(fastify: FastifyInstance) {
 
   fastify.put('/:financialItemId', {
     schema: {
+      tags: ["Investments"],
+      summary: "Update investment by financial item id",
       params: investmentFinancialItemIdParamsSchema,
       body: updateInvestmentBodySchema,
       response: {
@@ -53,6 +61,8 @@ export async function investmentRoutes(fastify: FastifyInstance) {
 
   fastify.delete('/:financialItemId', {
     schema: {
+      tags: ["Investments"],
+      summary: "Delete investment by financial item id",
       params: investmentFinancialItemIdParamsSchema,
       response: {
         404: investmentNotFoundSchema

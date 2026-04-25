@@ -12,6 +12,8 @@ import {
 export async function agendaItemRoutes(fastify: FastifyInstance) {
   fastify.post('/', {
     schema: {
+      tags: ["AgendaItems"],
+      summary: "Create agenda item",
       body: createAgendaItemBodySchema,
       response: {
         201: agendaItemSchema
@@ -21,6 +23,8 @@ export async function agendaItemRoutes(fastify: FastifyInstance) {
 
   fastify.get('/', {
     schema: {
+      tags: ["AgendaItems"],
+      summary: "List agenda items",
       response: {
         200: {
           type: "array",
@@ -32,6 +36,8 @@ export async function agendaItemRoutes(fastify: FastifyInstance) {
 
   fastify.get('/user/:userId', {
     schema: {
+      tags: ["AgendaItems"],
+      summary: "List agenda items by user",
       params: agendaItemUserIdParamsSchema,
       response: {
         200: {
@@ -44,6 +50,8 @@ export async function agendaItemRoutes(fastify: FastifyInstance) {
 
   fastify.get('/:id', {
     schema: {
+      tags: ["AgendaItems"],
+      summary: "Get agenda item by id",
       params: agendaItemIdParamsSchema,
       response: {
         200: agendaItemSchema,
@@ -54,6 +62,8 @@ export async function agendaItemRoutes(fastify: FastifyInstance) {
 
   fastify.put('/:id', {
     schema: {
+      tags: ["AgendaItems"],
+      summary: "Update agenda item by id",
       params: agendaItemIdParamsSchema,
       body: updateAgendaItemBodySchema,
       response: {
@@ -65,6 +75,8 @@ export async function agendaItemRoutes(fastify: FastifyInstance) {
 
   fastify.delete('/:id', {
     schema: {
+      tags: ["AgendaItems"],
+      summary: "Delete agenda item by id",
       params: agendaItemIdParamsSchema,
       response: {
         404: agendaItemNotFoundSchema

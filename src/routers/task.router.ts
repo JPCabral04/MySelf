@@ -12,6 +12,8 @@ import {
 export async function taskRoutes(fastify: FastifyInstance) {
   fastify.post('/', {
     schema: {
+      tags: ["Tasks"],
+      summary: "Create task",
       body: createTaskBodySchema,
       response: {
         201: taskSchema,
@@ -22,6 +24,8 @@ export async function taskRoutes(fastify: FastifyInstance) {
 
   fastify.get('/', {
     schema: {
+      tags: ["Tasks"],
+      summary: "List tasks",
       response: {
         200: {
           type: "array",
@@ -33,6 +37,8 @@ export async function taskRoutes(fastify: FastifyInstance) {
 
   fastify.get('/category/:categoryId', {
     schema: {
+      tags: ["Tasks"],
+      summary: "List tasks by category",
       params: taskCategoryIdParamsSchema,
       response: {
         200: {
@@ -45,6 +51,8 @@ export async function taskRoutes(fastify: FastifyInstance) {
 
   fastify.get('/:agendaItemId', {
     schema: {
+      tags: ["Tasks"],
+      summary: "Get task by agenda item id",
       params: taskAgendaItemIdParamsSchema,
       response: {
         200: taskSchema,
@@ -55,6 +63,8 @@ export async function taskRoutes(fastify: FastifyInstance) {
 
   fastify.put('/:agendaItemId', {
     schema: {
+      tags: ["Tasks"],
+      summary: "Update task by agenda item id",
       params: taskAgendaItemIdParamsSchema,
       body: updateTaskBodySchema,
       response: {
@@ -66,6 +76,8 @@ export async function taskRoutes(fastify: FastifyInstance) {
 
   fastify.delete('/:agendaItemId', {
     schema: {
+      tags: ["Tasks"],
+      summary: "Delete task by agenda item id",
       params: taskAgendaItemIdParamsSchema,
       response: {
         404: taskNotFoundSchema

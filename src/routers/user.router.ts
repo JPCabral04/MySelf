@@ -13,6 +13,8 @@ import {
 export async function userRoutes(fastify: FastifyInstance) {
   fastify.post('/', {
     schema: {
+      tags: ["Users"],
+      summary: "Create user",
       body: createUserBodySchema,
       response: {
         201: userSchema
@@ -22,6 +24,8 @@ export async function userRoutes(fastify: FastifyInstance) {
 
   fastify.get('/', {
     schema: {
+      tags: ["Users"],
+      summary: "List users",
       response: {
         200: {
           type: "array",
@@ -33,6 +37,8 @@ export async function userRoutes(fastify: FastifyInstance) {
 
   fastify.get('/email/:email', {
     schema: {
+      tags: ["Users"],
+      summary: "Get user by email",
       params: userEmailParamsSchema,
       response: {
         200: userSchema,
@@ -43,6 +49,8 @@ export async function userRoutes(fastify: FastifyInstance) {
 
   fastify.get('/:id', {
     schema: {
+      tags: ["Users"],
+      summary: "Get user by id",
       params: userIdParamsSchema,
       response: {
         200: userSchema,
@@ -53,6 +61,8 @@ export async function userRoutes(fastify: FastifyInstance) {
 
   fastify.put('/:id', {
     schema: {
+      tags: ["Users"],
+      summary: "Update user by id",
       params: userIdParamsSchema,
       body: updateUserBodySchema,
       response: {
@@ -64,6 +74,8 @@ export async function userRoutes(fastify: FastifyInstance) {
 
   fastify.delete('/:id', {
     schema: {
+      tags: ["Users"],
+      summary: "Delete user by id",
       params: userIdParamsSchema,
       response: {
         404: userNotFoundSchema

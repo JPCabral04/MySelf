@@ -33,6 +33,20 @@ await fastify.register(fastifySwagger, {
       version: '1.0.0',
     },
     servers: [{ url: 'http://localhost:3000' }],
+    tags: [
+      { name: 'Users', description: 'Operacoes de usuarios' },
+      { name: 'Categories', description: 'Operacoes de categorias' },
+      { name: 'AgendaItems', description: 'Operacoes de itens da agenda' },
+      { name: 'Tasks', description: 'Operacoes de tarefas' },
+      { name: 'Events', description: 'Operacoes de eventos' },
+      { name: 'FinancialItems', description: 'Operacoes de itens financeiros' },
+      { name: 'Transactions', description: 'Operacoes de transacoes' },
+      { name: 'Goals', description: 'Operacoes de metas' },
+      { name: 'Investments', description: 'Operacoes de investimentos' },
+      { name: 'Activities', description: 'Operacoes de atividades' },
+      { name: 'HabitModules', description: 'Operacoes de modulos de habito' },
+      { name: 'DailyRecords', description: 'Operacoes de registros diarios' }
+    ]
   }
 })
 

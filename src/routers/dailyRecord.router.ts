@@ -12,6 +12,8 @@ import {
 export async function dailyRecordRoutes(fastify: FastifyInstance) {
   fastify.post('/', {
     schema: {
+      tags: ["DailyRecords"],
+      summary: "Create daily record",
       body: createDailyRecordBodySchema,
       response: {
         201: dailyRecordSchema
@@ -21,6 +23,8 @@ export async function dailyRecordRoutes(fastify: FastifyInstance) {
 
   fastify.get('/', {
     schema: {
+      tags: ["DailyRecords"],
+      summary: "List daily records",
       response: {
         200: {
           type: "array",
@@ -32,6 +36,8 @@ export async function dailyRecordRoutes(fastify: FastifyInstance) {
 
   fastify.get('/habit/:habitId', {
     schema: {
+      tags: ["DailyRecords"],
+      summary: "List daily records by habit",
       params: dailyRecordHabitIdParamsSchema,
       response: {
         200: {
@@ -44,6 +50,8 @@ export async function dailyRecordRoutes(fastify: FastifyInstance) {
 
   fastify.get('/:id', {
     schema: {
+      tags: ["DailyRecords"],
+      summary: "Get daily record by id",
       params: dailyRecordIdParamsSchema,
       response: {
         200: dailyRecordSchema,
@@ -54,6 +62,8 @@ export async function dailyRecordRoutes(fastify: FastifyInstance) {
 
   fastify.put('/:id', {
     schema: {
+      tags: ["DailyRecords"],
+      summary: "Update daily record by id",
       params: dailyRecordIdParamsSchema,
       body: updateDailyRecordBodySchema,
       response: {
@@ -65,6 +75,8 @@ export async function dailyRecordRoutes(fastify: FastifyInstance) {
 
   fastify.delete('/:id', {
     schema: {
+      tags: ["DailyRecords"],
+      summary: "Delete daily record by id",
       params: dailyRecordIdParamsSchema,
       response: {
         404: dailyRecordNotFoundSchema

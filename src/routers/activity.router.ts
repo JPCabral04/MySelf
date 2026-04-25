@@ -12,6 +12,8 @@ import {
 export async function activityRoutes(fastify: FastifyInstance) {
   fastify.post('/', {
     schema: {
+      tags: ["Activities"],
+      summary: "Create activity",
       body: createActivityBodySchema,
       response: {
         201: activitySchema
@@ -21,6 +23,8 @@ export async function activityRoutes(fastify: FastifyInstance) {
 
   fastify.get('/', {
     schema: {
+      tags: ["Activities"],
+      summary: "List activities",
       response: {
         200: {
           type: "array",
@@ -32,6 +36,8 @@ export async function activityRoutes(fastify: FastifyInstance) {
 
   fastify.get('/user/:userId', {
     schema: {
+      tags: ["Activities"],
+      summary: "List activities by user",
       params: activityUserIdParamsSchema,
       response: {
         200: {
@@ -44,6 +50,8 @@ export async function activityRoutes(fastify: FastifyInstance) {
 
   fastify.get('/:id', {
     schema: {
+      tags: ["Activities"],
+      summary: "Get activity by id",
       params: activityIdParamsSchema,
       response: {
         200: activitySchema,
@@ -54,6 +62,8 @@ export async function activityRoutes(fastify: FastifyInstance) {
 
   fastify.put('/:id', {
     schema: {
+      tags: ["Activities"],
+      summary: "Update activity by id",
       params: activityIdParamsSchema,
       body: updateActivityBodySchema,
       response: {
@@ -65,6 +75,8 @@ export async function activityRoutes(fastify: FastifyInstance) {
 
   fastify.delete('/:id', {
     schema: {
+      tags: ["Activities"],
+      summary: "Delete activity by id",
       params: activityIdParamsSchema,
       response: {
         404: activityNotFoundSchema

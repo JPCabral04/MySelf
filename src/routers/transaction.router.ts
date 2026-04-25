@@ -12,6 +12,8 @@ import {
 export async function transactionRoutes(fastify: FastifyInstance) {
   fastify.post('/', {
     schema: {
+      tags: ["Transactions"],
+      summary: "Create transaction",
       body: createTransactionBodySchema,
       response: {
         201: transactionSchema,
@@ -22,6 +24,8 @@ export async function transactionRoutes(fastify: FastifyInstance) {
 
   fastify.get('/', {
     schema: {
+      tags: ["Transactions"],
+      summary: "List transactions",
       response: {
         200: {
           type: "array",
@@ -33,6 +37,8 @@ export async function transactionRoutes(fastify: FastifyInstance) {
 
   fastify.get('/category/:categoryId', {
     schema: {
+      tags: ["Transactions"],
+      summary: "List transactions by category",
       params: transactionCategoryIdParamsSchema,
       response: {
         200: {
@@ -45,6 +51,8 @@ export async function transactionRoutes(fastify: FastifyInstance) {
 
   fastify.get('/:financialItemId', {
     schema: {
+      tags: ["Transactions"],
+      summary: "Get transaction by financial item id",
       params: transactionFinancialItemIdParamsSchema,
       response: {
         200: transactionSchema,
@@ -55,6 +63,8 @@ export async function transactionRoutes(fastify: FastifyInstance) {
 
   fastify.put('/:financialItemId', {
     schema: {
+      tags: ["Transactions"],
+      summary: "Update transaction by financial item id",
       params: transactionFinancialItemIdParamsSchema,
       body: updateTransactionBodySchema,
       response: {
@@ -66,6 +76,8 @@ export async function transactionRoutes(fastify: FastifyInstance) {
 
   fastify.delete('/:financialItemId', {
     schema: {
+      tags: ["Transactions"],
+      summary: "Delete transaction by financial item id",
       params: transactionFinancialItemIdParamsSchema,
       response: {
         404: transactionNotFoundSchema

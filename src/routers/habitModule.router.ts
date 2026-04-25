@@ -11,6 +11,8 @@ import {
 export async function habitModuleRoutes(fastify: FastifyInstance) {
   fastify.post('/', {
     schema: {
+      tags: ["HabitModules"],
+      summary: "Create habit module",
       body: createHabitModuleBodySchema,
       response: {
         201: habitModuleSchema,
@@ -21,6 +23,8 @@ export async function habitModuleRoutes(fastify: FastifyInstance) {
 
   fastify.get('/', {
     schema: {
+      tags: ["HabitModules"],
+      summary: "List habit modules",
       response: {
         200: {
           type: "array",
@@ -32,6 +36,8 @@ export async function habitModuleRoutes(fastify: FastifyInstance) {
 
   fastify.get('/:activityId', {
     schema: {
+      tags: ["HabitModules"],
+      summary: "Get habit module by activity id",
       params: habitModuleActivityIdParamsSchema,
       response: {
         200: habitModuleSchema,
@@ -42,6 +48,8 @@ export async function habitModuleRoutes(fastify: FastifyInstance) {
 
   fastify.put('/:activityId', {
     schema: {
+      tags: ["HabitModules"],
+      summary: "Update habit module by activity id",
       params: habitModuleActivityIdParamsSchema,
       body: updateHabitModuleBodySchema,
       response: {
@@ -53,6 +61,8 @@ export async function habitModuleRoutes(fastify: FastifyInstance) {
 
   fastify.delete('/:activityId', {
     schema: {
+      tags: ["HabitModules"],
+      summary: "Delete habit module by activity id",
       params: habitModuleActivityIdParamsSchema,
       response: {
         404: habitModuleNotFoundSchema

@@ -12,6 +12,8 @@ import {
 export async function categoryRoutes(fastify: FastifyInstance) {
   fastify.post('/', {
     schema: {
+      tags: ["Categories"],
+      summary: "Create category",
       body: createCategoryBodySchema,
       response: {
         201: categorySchema
@@ -21,6 +23,8 @@ export async function categoryRoutes(fastify: FastifyInstance) {
 
   fastify.get('/', {
     schema: {
+      tags: ["Categories"],
+      summary: "List categories",
       response: {
         200: {
           type: "array",
@@ -32,6 +36,8 @@ export async function categoryRoutes(fastify: FastifyInstance) {
 
   fastify.get('/user/:userId', {
     schema: {
+      tags: ["Categories"],
+      summary: "List categories by user",
       params: categoryUserIdParamsSchema,
       response: {
         200: {
@@ -44,6 +50,8 @@ export async function categoryRoutes(fastify: FastifyInstance) {
 
   fastify.get('/:id', {
     schema: {
+      tags: ["Categories"],
+      summary: "Get category by id",
       params: categoryIdParamsSchema,
       response: {
         200: categorySchema,
@@ -54,6 +62,8 @@ export async function categoryRoutes(fastify: FastifyInstance) {
 
   fastify.put('/:id', {
     schema: {
+      tags: ["Categories"],
+      summary: "Update category by id",
       params: categoryIdParamsSchema,
       body: updateCategoryBodySchema,
       response: {
@@ -65,6 +75,8 @@ export async function categoryRoutes(fastify: FastifyInstance) {
 
   fastify.delete('/:id', {
     schema: {
+      tags: ["Categories"],
+      summary: "Delete category by id",
       params: categoryIdParamsSchema,
       response: {
         404: categoryNotFoundSchema
