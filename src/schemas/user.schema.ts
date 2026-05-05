@@ -32,20 +32,6 @@ export const userEmailParamsSchema = {
   required: ["email"]
 } as const;
 
-export const createUserBodySchema = {
-  type: "object",
-  additionalProperties: false,
-  properties: {
-    name: { type: "string", minLength: 1 },
-    email: { type: "string", format: "email" },
-    passwordHash: { type: "string", minLength: 1 },
-    profilePicture: {
-      anyOf: [{ type: "string" }, { type: "null" }]
-    }
-  },
-  required: ["name", "email", "passwordHash"]
-} as const;
-
 export const updateUserBodySchema = {
   type: "object",
   additionalProperties: false,
