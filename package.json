@@ -12,6 +12,7 @@
   "type": "module",
   "packageManager": "pnpm@10.21.0",
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/node": "^25.5.2",
     "@types/pg": "^8.20.0",
     "prisma": "^7.7.0",
@@ -24,6 +25,7 @@
     "@fastify/swagger-ui": "^5.2.6",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.4.2",
     "fastify": "^5.8.5",
     "pg": "^8.20.0"
