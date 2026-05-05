@@ -1,7 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { userController } from "../controllers/UserController";
 import {
-  createUserBodySchema,
   updateUserBodySchema,
   userEmailParamsSchema,
   userIdParamsSchema,
@@ -11,17 +10,6 @@ import {
 
 
 export async function userRoutes(fastify: FastifyInstance) {
-  fastify.post('/', {
-    schema: {
-      tags: ["Users"],
-      summary: "Create user",
-      body: createUserBodySchema,
-      response: {
-        201: userSchema
-      }
-    }
-  }, userController.post);
-
   fastify.get('/', {
     schema: {
       tags: ["Users"],

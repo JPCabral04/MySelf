@@ -7,19 +7,6 @@ export class UserController {
   private userRepository = new UserRepository();
   private readonly SALT_ROUNDS = 10;
 
-  post = async (
-    request: FastifyRequest<{
-      Body: Omit<User, 'id'>
-    }>,
-    reply: FastifyReply
-  ) => {
-    const { passwordHash, ...userData } = request.body;
-    const hashedPassword = await bcrypt.hash(passwordHash, this.SALT_ROUNDS);
-    const user = { ...userData, passwordHash: hashedPassword };
-    const json = await this.userRepository.create(user);
-    return reply.status(201).send(json);
-  };
-
   get = async (
     request: FastifyRequest,
     reply: FastifyReply
