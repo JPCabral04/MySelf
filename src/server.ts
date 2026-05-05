@@ -1,5 +1,6 @@
 // ESM
 import Fastify from 'fastify'
+import fastifyJwt from '@fastify/jwt'
 import { userRoutes } from './routers/user.router'
 import { categoryRoutes } from './routers/category.router'
 import { agendaItemRoutes } from './routers/agendaItem.router'
@@ -12,12 +13,17 @@ import { investmentRoutes } from './routers/investment.router'
 import { activityRoutes } from './routers/activity.router'
 import { habitModuleRoutes } from './routers/habitModule.router'
 import { dailyRecordRoutes } from './routers/dailyRecord.router'
+import { authRouter } from './routers/auth.router'
 import cors from '@fastify/cors'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
 
 const fastify = Fastify({
   logger: true
+})
+
+await fastify.register(fastifyJwt, {
+  secret: process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 })
 
 await fastify.register(cors, {
@@ -59,6 +65,7 @@ fastify.get('/', async (request, reply) => {
   return { hello: 'world' }
 })
 
+fastify.register(authRouter)
 fastify.register(userRoutes, { prefix: '/users' })
 fastify.register(categoryRoutes, { prefix: '/categories' })
 fastify.register(agendaItemRoutes, { prefix: '/agenda-items' })
