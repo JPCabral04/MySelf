@@ -14,6 +14,7 @@ import { activityRoutes } from './routers/activity.router'
 import { habitModuleRoutes } from './routers/habitModule.router'
 import { dailyRecordRoutes } from './routers/dailyRecord.router'
 import { authRouter } from './routers/auth.router'
+import { authenticateToken } from './middlewares/auth.middleware'
 import cors from '@fastify/cors'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
@@ -39,7 +40,18 @@ await fastify.register(fastifySwagger, {
       version: '1.0.0',
     },
     servers: [{ url: 'http://localhost:3000' }],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    },
+    security: [{ bearerAuth: [] }],
     tags: [
+      { name: 'Auth', description: 'Operacoes de autenticacao' },
       { name: 'Users', description: 'Operacoes de usuarios' },
       { name: 'Categories', description: 'Operacoes de categorias' },
       { name: 'AgendaItems', description: 'Operacoes de itens da agenda' },
@@ -60,12 +72,13 @@ await fastify.register(fastifySwaggerUi, {
   routePrefix: '/docs',
 })
 
+fastify.addHook('onRequest', authenticateToken)
 
 fastify.get('/', async (request, reply) => {
   return { hello: 'world' }
 })
 
-fastify.register(authRouter)
+fastify.register(authRouter, { prefix: '/auth' })
 fastify.register(userRoutes, { prefix: '/users' })
 fastify.register(categoryRoutes, { prefix: '/categories' })
 fastify.register(agendaItemRoutes, { prefix: '/agenda-items' })
