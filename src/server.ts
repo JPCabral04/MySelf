@@ -28,9 +28,35 @@ await fastify.register(fastifyJwt, {
 })
 
 await fastify.register(cors, {
-  origin: "*",
-  methods: "*",
-});
+  origin: (origin, cb) => {
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:3000'
+    ]
+
+    // permite chamadas sem origin (ex: Postman, Swagger)
+    if (!origin || allowedOrigins.includes(origin)) {
+      cb(null, true)
+    } else {
+      cb(new Error('Not allowed'), false)
+    }
+  },
+
+  credentials: true,
+
+  methods: [
+    'GET',
+    'POST',
+    'PUT',
+    'DELETE',
+    'OPTIONS'
+  ],
+
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization'
+  ]
+})
 
 await fastify.register(fastifySwagger, {
   openapi: {
