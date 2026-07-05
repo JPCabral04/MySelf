@@ -21,6 +21,10 @@ export class EventController {
       return reply.status(404).send({ message: "Agenda item not found" });
     }
 
+    if (agendaItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
     if (agendaItem.type !== AgendaType.EVENT) {
       return reply.status(400).send({ message: "Agenda item type must be EVENT" });
     }
@@ -33,7 +37,8 @@ export class EventController {
     request: FastifyRequest,
     reply: FastifyReply
   ) => {
-    const json = await this.eventRepository.findAll();
+    const userId = request.user.id;
+    const json = await this.eventRepository.findByUserId(userId);
     return reply.status(200).send(json);
   };
 
@@ -49,6 +54,10 @@ export class EventController {
 
     if (!event) {
       return reply.status(404).send({ message: "Event not found" });
+    }
+
+    if (event.agendaItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     return reply.status(200).send(event);
@@ -68,6 +77,10 @@ export class EventController {
 
     if (!agendaItem) {
       return reply.status(404).send({ message: "Agenda item not found" });
+    }
+
+    if (agendaItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     if (agendaItem.type !== AgendaType.EVENT) {
@@ -97,6 +110,10 @@ export class EventController {
 
     if (!eventExists) {
       return reply.status(404).send({ message: "Event not found" });
+    }
+
+    if (eventExists.agendaItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     await this.eventRepository.delete(agendaItemId);

@@ -4,7 +4,6 @@ import {
   agendaItemIdParamsSchema,
   agendaItemNotFoundSchema,
   agendaItemSchema,
-  agendaItemUserIdParamsSchema,
   createAgendaItemBodySchema,
   updateAgendaItemBodySchema
 } from "../schemas/agendaItem.schema";
@@ -34,19 +33,6 @@ export async function agendaItemRoutes(fastify: FastifyInstance) {
     }
   }, agendaItemController.get);
 
-  fastify.get('/user/:userId', {
-    schema: {
-      tags: ["AgendaItems"],
-      summary: "List agenda items by user",
-      params: agendaItemUserIdParamsSchema,
-      response: {
-        200: {
-          type: "array",
-          items: agendaItemSchema
-        }
-      }
-    }
-  }, agendaItemController.getByUserId);
 
   fastify.get('/:id', {
     schema: {

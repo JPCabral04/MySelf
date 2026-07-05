@@ -1,14 +1,17 @@
+import { financialItemRelationSchema } from "./_shared";
+
 export const investmentSchema = {
   type: "object",
   additionalProperties: false,
   properties: {
     financialItemId: { type: "string" },
+    financialItem: financialItemRelationSchema,
     assetName: { type: "string" },
     estimatedReturn: {
       anyOf: [{ type: "number" }, { type: "null" }]
     }
   },
-  required: ["financialItemId", "assetName"]
+  required: ["financialItemId", "financialItem", "assetName"]
 } as const;
 
 export const investmentFinancialItemIdParamsSchema = {

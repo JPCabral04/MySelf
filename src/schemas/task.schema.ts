@@ -1,8 +1,14 @@
+import {
+  agendaItemRelationSchema,
+  categoryRelationSchema,
+} from "./_shared";
+
 export const taskSchema = {
   type: "object",
   additionalProperties: false,
   properties: {
     agendaItemId: { type: "string" },
+    agendaItem: agendaItemRelationSchema,
     dueDate: {
       anyOf: [
         { type: "string", format: "date-time" },
@@ -15,9 +21,10 @@ export const taskSchema = {
     isCompleted: { type: "boolean" },
     categoryId: {
       anyOf: [{ type: "string" }, { type: "null" }]
-    }
+    },
+    category: categoryRelationSchema,
   },
-  required: ["agendaItemId", "isCompleted"]
+  required: ["agendaItemId", "agendaItem", "isCompleted"]
 } as const;
 
 export const taskAgendaItemIdParamsSchema = {

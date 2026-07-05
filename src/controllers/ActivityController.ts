@@ -11,8 +11,9 @@ export class ActivityController {
     }>,
     reply: FastifyReply
   ) => {
-    const activity = request.body;
-    const json = await this.activityRepository.create(activity);
+    const { userId: _ignored, ...rest } = request.body as Activity;
+    const userId = request.user.id;
+    const json = await this.activityRepository.create({ ...rest, userId });
     return reply.status(201).send(json);
   };
 
@@ -20,7 +21,8 @@ export class ActivityController {
     request: FastifyRequest,
     reply: FastifyReply
   ) => {
-    const json = await this.activityRepository.findAll();
+    const userId = request.user.id;
+    const json = await this.activityRepository.findByUserId(userId);
     return reply.status(200).send(json);
   };
 
@@ -38,20 +40,11 @@ export class ActivityController {
       return reply.status(404).send({ message: "Activity not found" });
     }
 
+    if (activity.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
     return reply.status(200).send(activity);
-  };
-
-  getByUserId = async (
-    request: FastifyRequest<{
-      Params: { userId: string }
-    }>,
-    reply: FastifyReply
-  ) => {
-    const { userId } = request.params;
-
-    const activities = await this.activityRepository.findByUserId(userId);
-
-    return reply.status(200).send(activities);
   };
 
   put = async (
@@ -68,6 +61,10 @@ export class ActivityController {
 
     if (!activityExists) {
       return reply.status(404).send({ message: "Activity not found" });
+    }
+
+    if (activityExists.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     const updated = await this.activityRepository.update(id, data);
@@ -87,6 +84,10 @@ export class ActivityController {
 
     if (!activityExists) {
       return reply.status(404).send({ message: "Activity not found" });
+    }
+
+    if (activityExists.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     await this.activityRepository.delete(id);

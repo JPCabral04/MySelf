@@ -4,7 +4,6 @@ import {
   categoryIdParamsSchema,
   categoryNotFoundSchema,
   categorySchema,
-  categoryUserIdParamsSchema,
   createCategoryBodySchema,
   updateCategoryBodySchema
 } from "../schemas/category.schema";
@@ -34,19 +33,6 @@ export async function categoryRoutes(fastify: FastifyInstance) {
     }
   }, categoryController.get);
 
-  fastify.get('/user/:userId', {
-    schema: {
-      tags: ["Categories"],
-      summary: "List categories by user",
-      params: categoryUserIdParamsSchema,
-      response: {
-        200: {
-          type: "array",
-          items: categorySchema
-        }
-      }
-    }
-  }, categoryController.getByUserId);
 
   fastify.get('/:id', {
     schema: {

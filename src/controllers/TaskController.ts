@@ -21,6 +21,10 @@ export class TaskController {
       return reply.status(404).send({ message: "Agenda item not found" });
     }
 
+    if (agendaItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
     if (agendaItem.type !== AgendaType.TASK) {
       return reply.status(400).send({ message: "Agenda item type must be TASK" });
     }
@@ -33,7 +37,8 @@ export class TaskController {
     request: FastifyRequest,
     reply: FastifyReply
   ) => {
-    const json = await this.taskRepository.findAll();
+    const userId = request.user.id;
+    const json = await this.taskRepository.findByUserId(userId);
     return reply.status(200).send(json);
   };
 
@@ -51,6 +56,10 @@ export class TaskController {
       return reply.status(404).send({ message: "Task not found" });
     }
 
+    if (task.agendaItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
     return reply.status(200).send(task);
   };
 
@@ -64,7 +73,11 @@ export class TaskController {
 
     const tasks = await this.taskRepository.findByCategoryId(categoryId);
 
-    return reply.status(200).send(tasks);
+    // Filter to only return tasks that belong to the authenticated user
+    const userId = request.user.id;
+    const filtered = tasks.filter(t => t.agendaItem.userId === userId);
+
+    return reply.status(200).send(filtered);
   };
 
   put = async (
@@ -81,6 +94,10 @@ export class TaskController {
 
     if (!agendaItem) {
       return reply.status(404).send({ message: "Agenda item not found" });
+    }
+
+    if (agendaItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     if (agendaItem.type !== AgendaType.TASK) {
@@ -110,6 +127,10 @@ export class TaskController {
 
     if (!taskExists) {
       return reply.status(404).send({ message: "Task not found" });
+    }
+
+    if (taskExists.agendaItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     await this.taskRepository.delete(agendaItemId);

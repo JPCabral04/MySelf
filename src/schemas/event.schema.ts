@@ -1,15 +1,18 @@
+import { agendaItemRelationSchema } from "./_shared";
+
 export const eventSchema = {
   type: "object",
   additionalProperties: false,
   properties: {
     agendaItemId: { type: "string" },
+    agendaItem: agendaItemRelationSchema,
     startDate: { type: "string", format: "date-time" },
     endDate: { type: "string", format: "date-time" },
     googleEventId: {
       anyOf: [{ type: "string" }, { type: "null" }]
     }
   },
-  required: ["agendaItemId", "startDate", "endDate"]
+  required: ["agendaItemId", "agendaItem", "startDate", "endDate"]
 } as const;
 
 export const eventAgendaItemIdParamsSchema = {

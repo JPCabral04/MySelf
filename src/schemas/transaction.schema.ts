@@ -1,8 +1,14 @@
+import {
+  financialItemRelationSchema,
+  categoryRelationSchema,
+} from "./_shared";
+
 export const transactionSchema = {
   type: "object",
   additionalProperties: false,
   properties: {
     financialItemId: { type: "string" },
+    financialItem: financialItemRelationSchema,
     transactionType: { type: "string" },
     date: { type: "string", format: "date-time" },
     description: {
@@ -10,9 +16,10 @@ export const transactionSchema = {
     },
     categoryId: {
       anyOf: [{ type: "string" }, { type: "null" }]
-    }
+    },
+    category: categoryRelationSchema,
   },
-  required: ["financialItemId", "transactionType", "date"]
+  required: ["financialItemId", "financialItem", "transactionType", "date"]
 } as const;
 
 export const transactionFinancialItemIdParamsSchema = {

@@ -5,7 +5,6 @@ import {
   financialItemIdParamsSchema,
   financialItemNotFoundSchema,
   financialItemSchema,
-  financialItemUserIdParamsSchema,
   updateFinancialItemBodySchema
 } from "../schemas/financialItem.schema";
 
@@ -34,19 +33,6 @@ export async function financialItemRoutes(fastify: FastifyInstance) {
     }
   }, financialItemController.get);
 
-  fastify.get('/user/:userId', {
-    schema: {
-      tags: ["FinancialItems"],
-      summary: "List financial items by user",
-      params: financialItemUserIdParamsSchema,
-      response: {
-        200: {
-          type: "array",
-          items: financialItemSchema
-        }
-      }
-    }
-  }, financialItemController.getByUserId);
 
   fastify.get('/:id', {
     schema: {

@@ -21,6 +21,10 @@ export class GoalController {
       return reply.status(404).send({ message: "Financial item not found" });
     }
 
+    if (financialItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
     if (financialItem.type !== FinancialType.GOAL) {
       return reply.status(400).send({ message: "Financial item type must be GOAL" });
     }
@@ -33,7 +37,8 @@ export class GoalController {
     request: FastifyRequest,
     reply: FastifyReply
   ) => {
-    const json = await this.goalRepository.findAll();
+    const userId = request.user.id;
+    const json = await this.goalRepository.findByUserId(userId);
     return reply.status(200).send(json);
   };
 
@@ -49,6 +54,10 @@ export class GoalController {
 
     if (!goal) {
       return reply.status(404).send({ message: "Goal not found" });
+    }
+
+    if (goal.financialItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     return reply.status(200).send(goal);
@@ -68,6 +77,10 @@ export class GoalController {
 
     if (!financialItem) {
       return reply.status(404).send({ message: "Financial item not found" });
+    }
+
+    if (financialItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     if (financialItem.type !== FinancialType.GOAL) {
@@ -97,6 +110,10 @@ export class GoalController {
 
     if (!goalExists) {
       return reply.status(404).send({ message: "Goal not found" });
+    }
+
+    if (goalExists.financialItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     await this.goalRepository.delete(financialItemId);

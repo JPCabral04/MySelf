@@ -1,8 +1,11 @@
+import { financialItemRelationSchema } from "./_shared";
+
 export const goalSchema = {
   type: "object",
   additionalProperties: false,
   properties: {
     financialItemId: { type: "string" },
+    financialItem: financialItemRelationSchema,
     title: { type: "string" },
     targetAmount: { type: "number" },
     targetDate: {
@@ -12,7 +15,7 @@ export const goalSchema = {
       ]
     }
   },
-  required: ["financialItemId", "title", "targetAmount"]
+  required: ["financialItemId", "financialItem", "title", "targetAmount"]
 } as const;
 
 export const goalFinancialItemIdParamsSchema = {

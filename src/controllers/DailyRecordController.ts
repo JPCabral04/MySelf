@@ -1,9 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { DailyRecord } from "../../generated/prisma/client";
 import { DailyRecordRepository } from "../repositories/DailyRecordRepository";
+import { HabitModuleRepository } from "../repositories/HabitModuleRepository";
 
 export class DailyRecordController {
   private dailyRecordRepository = new DailyRecordRepository();
+  private habitModuleRepository = new HabitModuleRepository();
 
   post = async (
     request: FastifyRequest<{
@@ -12,6 +14,18 @@ export class DailyRecordController {
     reply: FastifyReply
   ) => {
     const dailyRecord = request.body;
+
+    // Verify that the habit belongs to the authenticated user
+    const habitModule = await this.habitModuleRepository.findById(dailyRecord.habitId);
+
+    if (!habitModule) {
+      return reply.status(404).send({ message: "Habit module not found" });
+    }
+
+    if (habitModule.activity.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
     const json = await this.dailyRecordRepository.create(dailyRecord);
     return reply.status(201).send(json);
   };
@@ -20,7 +34,8 @@ export class DailyRecordController {
     request: FastifyRequest,
     reply: FastifyReply
   ) => {
-    const json = await this.dailyRecordRepository.findAll();
+    const userId = request.user.id;
+    const json = await this.dailyRecordRepository.findByUserId(userId);
     return reply.status(200).send(json);
   };
 
@@ -38,6 +53,12 @@ export class DailyRecordController {
       return reply.status(404).send({ message: "Daily record not found" });
     }
 
+    // Check ownership via the habit → activity chain
+    const habitModule = await this.habitModuleRepository.findById(dailyRecord.habitId);
+    if (!habitModule || habitModule.activity.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
     return reply.status(200).send(dailyRecord);
   };
 
@@ -48,6 +69,12 @@ export class DailyRecordController {
     reply: FastifyReply
   ) => {
     const { habitId } = request.params;
+
+    // Verify that the habit belongs to the authenticated user
+    const habitModule = await this.habitModuleRepository.findById(habitId);
+    if (!habitModule || habitModule.activity.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
 
     const dailyRecords = await this.dailyRecordRepository.findByHabitId(habitId);
 
@@ -70,6 +97,11 @@ export class DailyRecordController {
       return reply.status(404).send({ message: "Daily record not found" });
     }
 
+    const habitModule = await this.habitModuleRepository.findById(dailyRecordExists.habitId);
+    if (!habitModule || habitModule.activity.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
     const updated = await this.dailyRecordRepository.update(id, data);
 
     return reply.status(200).send(updated);
@@ -87,6 +119,11 @@ export class DailyRecordController {
 
     if (!dailyRecordExists) {
       return reply.status(404).send({ message: "Daily record not found" });
+    }
+
+    const habitModule = await this.habitModuleRepository.findById(dailyRecordExists.habitId);
+    if (!habitModule || habitModule.activity.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     await this.dailyRecordRepository.delete(id);

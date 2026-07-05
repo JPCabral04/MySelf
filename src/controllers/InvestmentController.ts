@@ -21,6 +21,10 @@ export class InvestmentController {
       return reply.status(404).send({ message: "Financial item not found" });
     }
 
+    if (financialItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
     if (financialItem.type !== FinancialType.INVESTMENT) {
       return reply.status(400).send({ message: "Financial item type must be INVESTMENT" });
     }
@@ -33,7 +37,8 @@ export class InvestmentController {
     request: FastifyRequest,
     reply: FastifyReply
   ) => {
-    const json = await this.investmentRepository.findAll();
+    const userId = request.user.id;
+    const json = await this.investmentRepository.findByUserId(userId);
     return reply.status(200).send(json);
   };
 
@@ -49,6 +54,10 @@ export class InvestmentController {
 
     if (!investment) {
       return reply.status(404).send({ message: "Investment not found" });
+    }
+
+    if (investment.financialItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     return reply.status(200).send(investment);
@@ -68,6 +77,10 @@ export class InvestmentController {
 
     if (!financialItem) {
       return reply.status(404).send({ message: "Financial item not found" });
+    }
+
+    if (financialItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     if (financialItem.type !== FinancialType.INVESTMENT) {
@@ -97,6 +110,10 @@ export class InvestmentController {
 
     if (!investmentExists) {
       return reply.status(404).send({ message: "Investment not found" });
+    }
+
+    if (investmentExists.financialItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     await this.investmentRepository.delete(financialItemId);

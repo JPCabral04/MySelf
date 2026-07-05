@@ -27,6 +27,12 @@ export class DailyRecordRepository {
     })
   }
 
+  async findByUserId(userId: string): Promise<DailyRecord[]> {
+    return prisma.dailyRecord.findMany({
+      where: { habit: { activity: { userId } } }
+    })
+  }
+
   async update(id: string, data: UpdateDailyRecordDTO): Promise<DailyRecord> {
     return prisma.dailyRecord.update({
       where: { id },

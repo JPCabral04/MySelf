@@ -1,36 +1,50 @@
-import { Event } from "../../generated/prisma/client"
+import { Prisma } from "../../generated/prisma/client"
 import { prisma } from "../../lib/prisma"
 
-type CreateEventDTO = Omit<Event, 'agendaItem'>
+const eventInclude = { agendaItem: true } as const
+
+export type EventWithRelations = Prisma.EventGetPayload<{ include: typeof eventInclude }>
+
+type CreateEventDTO = Omit<EventWithRelations, 'agendaItem'>
 
 type UpdateEventDTO = Partial<CreateEventDTO>
 
 export class EventRepository {
 
-  async create(data: CreateEventDTO): Promise<Event> {
-    return prisma.event.create({ data })
+  async create(data: CreateEventDTO): Promise<EventWithRelations> {
+    return prisma.event.create({ data, include: eventInclude })
   }
 
-  async findAll(): Promise<Event[]> {
-    return prisma.event.findMany()
+  async findAll(): Promise<EventWithRelations[]> {
+    return prisma.event.findMany({ include: eventInclude })
   }
 
-  async findById(agendaItemId: string): Promise<Event | null> {
+  async findById(agendaItemId: string): Promise<EventWithRelations | null> {
     return prisma.event.findUnique({
-      where: { agendaItemId }
+      where: { agendaItemId },
+      include: eventInclude
     })
   }
 
-  async update(agendaItemId: string, data: UpdateEventDTO): Promise<Event> {
+  async findByUserId(userId: string): Promise<EventWithRelations[]> {
+    return prisma.event.findMany({
+      where: { agendaItem: { userId } },
+      include: eventInclude
+    })
+  }
+
+  async update(agendaItemId: string, data: UpdateEventDTO): Promise<EventWithRelations> {
     return prisma.event.update({
       where: { agendaItemId },
-      data
+      data,
+      include: eventInclude
     })
   }
 
-  async delete(agendaItemId: string): Promise<Event> {
+  async delete(agendaItemId: string): Promise<EventWithRelations> {
     return prisma.event.delete({
-      where: { agendaItemId }
+      where: { agendaItemId },
+      include: eventInclude
     })
   }
 }

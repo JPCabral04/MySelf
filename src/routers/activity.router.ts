@@ -4,7 +4,6 @@ import {
   activityIdParamsSchema,
   activityNotFoundSchema,
   activitySchema,
-  activityUserIdParamsSchema,
   createActivityBodySchema,
   updateActivityBodySchema
 } from "../schemas/activity.schema";
@@ -34,19 +33,6 @@ export async function activityRoutes(fastify: FastifyInstance) {
     }
   }, activityController.get);
 
-  fastify.get('/user/:userId', {
-    schema: {
-      tags: ["Activities"],
-      summary: "List activities by user",
-      params: activityUserIdParamsSchema,
-      response: {
-        200: {
-          type: "array",
-          items: activitySchema
-        }
-      }
-    }
-  }, activityController.getByUserId);
 
   fastify.get('/:id', {
     schema: {

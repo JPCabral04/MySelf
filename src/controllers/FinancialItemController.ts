@@ -11,8 +11,9 @@ export class FinancialItemController {
     }>,
     reply: FastifyReply
   ) => {
-    const financialItem = request.body;
-    const json = await this.financialItemRepository.create(financialItem);
+    const { userId: _ignored, ...rest } = request.body as FinancialItem;
+    const userId = request.user.id;
+    const json = await this.financialItemRepository.create({ ...rest, userId });
     return reply.status(201).send(json);
   };
 
@@ -20,7 +21,8 @@ export class FinancialItemController {
     request: FastifyRequest,
     reply: FastifyReply
   ) => {
-    const json = await this.financialItemRepository.findAll();
+    const userId = request.user.id;
+    const json = await this.financialItemRepository.findByUserId(userId);
     return reply.status(200).send(json);
   };
 
@@ -38,20 +40,11 @@ export class FinancialItemController {
       return reply.status(404).send({ message: "Financial item not found" });
     }
 
+    if (financialItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
     return reply.status(200).send(financialItem);
-  };
-
-  getByUserId = async (
-    request: FastifyRequest<{
-      Params: { userId: string }
-    }>,
-    reply: FastifyReply
-  ) => {
-    const { userId } = request.params;
-
-    const financialItems = await this.financialItemRepository.findByUserId(userId);
-
-    return reply.status(200).send(financialItems);
   };
 
   put = async (
@@ -68,6 +61,10 @@ export class FinancialItemController {
 
     if (!financialItemExists) {
       return reply.status(404).send({ message: "Financial item not found" });
+    }
+
+    if (financialItemExists.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     const updated = await this.financialItemRepository.update(id, data);
@@ -87,6 +84,10 @@ export class FinancialItemController {
 
     if (!financialItemExists) {
       return reply.status(404).send({ message: "Financial item not found" });
+    }
+
+    if (financialItemExists.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     await this.financialItemRepository.delete(id);

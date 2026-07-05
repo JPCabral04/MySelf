@@ -1,14 +1,17 @@
+import { activityRelationSchema } from "./_shared";
+
 export const habitModuleSchema = {
   type: "object",
   additionalProperties: false,
   properties: {
     activityId: { type: "string" },
+    activity: activityRelationSchema,
     notes: {
       anyOf: [{ type: "string" }, { type: "null" }]
     },
     currentStreak: { type: "integer" }
   },
-  required: ["activityId", "currentStreak"]
+  required: ["activityId", "activity", "currentStreak"]
 } as const;
 
 export const habitModuleActivityIdParamsSchema = {

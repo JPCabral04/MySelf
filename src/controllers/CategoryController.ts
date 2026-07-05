@@ -11,8 +11,9 @@ export class CategoryController {
     }>,
     reply: FastifyReply
   ) => {
-    const category = request.body;
-    const json = await this.categoryRepository.create(category);
+    const { userId: _ignored, ...rest } = request.body as Category;
+    const userId = request.user.id;
+    const json = await this.categoryRepository.create({ ...rest, userId });
     return reply.status(201).send(json);
   };
 
@@ -20,7 +21,8 @@ export class CategoryController {
     request: FastifyRequest,
     reply: FastifyReply
   ) => {
-    const json = await this.categoryRepository.findAll();
+    const userId = request.user.id;
+    const json = await this.categoryRepository.findByUserId(userId);
     return reply.status(200).send(json);
   };
 
@@ -38,20 +40,11 @@ export class CategoryController {
       return reply.status(404).send({ message: "Category not found" });
     }
 
+    if (category.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
     return reply.status(200).send(category);
-  };
-
-  getByUserId = async (
-    request: FastifyRequest<{
-      Params: { userId: string }
-    }>,
-    reply: FastifyReply
-  ) => {
-    const { userId } = request.params;
-
-    const categories = await this.categoryRepository.findByUserId(userId);
-
-    return reply.status(200).send(categories);
   };
 
   put = async (
@@ -68,6 +61,10 @@ export class CategoryController {
 
     if (!categoryExists) {
       return reply.status(404).send({ message: "Category not found" });
+    }
+
+    if (categoryExists.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     const updated = await this.categoryRepository.update(id, data);
@@ -87,6 +84,10 @@ export class CategoryController {
 
     if (!categoryExists) {
       return reply.status(404).send({ message: "Category not found" });
+    }
+
+    if (categoryExists.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     await this.categoryRepository.delete(id);

@@ -11,8 +11,9 @@ export class AgendaItemController {
     }>,
     reply: FastifyReply
   ) => {
-    const agendaItem = request.body;
-    const json = await this.agendaItemRepository.create(agendaItem);
+    const { userId: _ignored, ...rest } = request.body as AgendaItem;
+    const userId = request.user.id;
+    const json = await this.agendaItemRepository.create({ ...rest, userId });
     return reply.status(201).send(json);
   };
 
@@ -20,7 +21,8 @@ export class AgendaItemController {
     request: FastifyRequest,
     reply: FastifyReply
   ) => {
-    const json = await this.agendaItemRepository.findAll();
+    const userId = request.user.id;
+    const json = await this.agendaItemRepository.findByUserId(userId);
     return reply.status(200).send(json);
   };
 
@@ -38,20 +40,11 @@ export class AgendaItemController {
       return reply.status(404).send({ message: "Agenda item not found" });
     }
 
+    if (agendaItem.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
     return reply.status(200).send(agendaItem);
-  };
-
-  getByUserId = async (
-    request: FastifyRequest<{
-      Params: { userId: string }
-    }>,
-    reply: FastifyReply
-  ) => {
-    const { userId } = request.params;
-
-    const agendaItems = await this.agendaItemRepository.findByUserId(userId);
-
-    return reply.status(200).send(agendaItems);
   };
 
   put = async (
@@ -68,6 +61,10 @@ export class AgendaItemController {
 
     if (!agendaItemExists) {
       return reply.status(404).send({ message: "Agenda item not found" });
+    }
+
+    if (agendaItemExists.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     const updated = await this.agendaItemRepository.update(id, data);
@@ -87,6 +84,10 @@ export class AgendaItemController {
 
     if (!agendaItemExists) {
       return reply.status(404).send({ message: "Agenda item not found" });
+    }
+
+    if (agendaItemExists.userId !== request.user.id) {
+      return reply.status(403).send({ message: "Forbidden" });
     }
 
     await this.agendaItemRepository.delete(id);

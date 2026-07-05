@@ -1,42 +1,68 @@
-import { Task } from "../../generated/prisma/client"
+import { Prisma } from "../../generated/prisma/client"
 import { prisma } from "../../lib/prisma"
 
-type CreateTaskDTO = Omit<Task, 'agendaItem' | 'category'>
+const taskInclude = { agendaItem: true, category: true } as const
+
+export type TaskWithRelations = Prisma.TaskGetPayload<{ include: typeof taskInclude }>
+
+type CreateTaskDTO = Omit<Prisma.TaskCreateInput, 'agendaItem' | 'category'> & {
+  agendaItemId: string
+  categoryId?: string | null
+  dueDate?: Date | null
+  priority?: string | null
+  isCompleted: boolean
+}
 
 type UpdateTaskDTO = Partial<CreateTaskDTO>
 
 export class TaskRepository {
 
-  async create(data: CreateTaskDTO): Promise<Task> {
-    return prisma.task.create({ data })
+  async create(data: Omit<TaskWithRelations, 'agendaItem' | 'category'>): Promise<TaskWithRelations> {
+    const { agendaItemId, categoryId, dueDate, priority, isCompleted } = data
+    return prisma.task.create({
+      data: { agendaItemId, categoryId, dueDate, priority, isCompleted },
+      include: taskInclude
+    })
   }
 
-  async findAll(): Promise<Task[]> {
-    return prisma.task.findMany()
+  async findAll(): Promise<TaskWithRelations[]> {
+    return prisma.task.findMany({ include: taskInclude })
   }
 
-  async findById(agendaItemId: string): Promise<Task | null> {
+  async findById(agendaItemId: string): Promise<TaskWithRelations | null> {
     return prisma.task.findUnique({
-      where: { agendaItemId }
+      where: { agendaItemId },
+      include: taskInclude
     })
   }
 
-  async findByCategoryId(categoryId: string): Promise<Task[]> {
+  async findByUserId(userId: string): Promise<TaskWithRelations[]> {
     return prisma.task.findMany({
-      where: { categoryId }
+      where: { agendaItem: { userId } },
+      include: taskInclude
     })
   }
 
-  async update(agendaItemId: string, data: UpdateTaskDTO): Promise<Task> {
+  async findByCategoryId(categoryId: string): Promise<TaskWithRelations[]> {
+    return prisma.task.findMany({
+      where: { categoryId },
+      include: taskInclude
+    })
+  }
+
+  async update(agendaItemId: string, data: UpdateTaskDTO): Promise<TaskWithRelations> {
+    const { agendaItemId: _id, ...rest } = data as any
     return prisma.task.update({
       where: { agendaItemId },
-      data
+      data: rest,
+      include: taskInclude
     })
   }
 
-  async delete(agendaItemId: string): Promise<Task> {
+  async delete(agendaItemId: string): Promise<TaskWithRelations> {
     return prisma.task.delete({
-      where: { agendaItemId }
+      where: { agendaItemId },
+      include: taskInclude
     })
   }
 }
